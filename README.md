@@ -2,6 +2,20 @@
 
 A collection of autonomous agents for specialized tasks. Currently featuring a tech news aggregation and summarization system.
 
+## ⚡ Quick Start
+
+```bash
+# Install globally
+git clone https://github.com/BatraAchin/subagents.git
+cd subagents && ./install.sh
+
+# Configure API key
+nano tech-news/config/gemini.yaml
+
+# Get your daily tech news digest
+fetch-tech-news --summarize
+```
+
 ## 🚀 Features
 
 ### Tech News Agent (`tech-news/`)
@@ -75,6 +89,116 @@ To remove the global command:
 ```bash
 cd subagents
 ./uninstall.sh
+```
+
+## 🚀 How to Use
+
+### Basic Commands
+
+Once installed, you can use `fetch-tech-news` from anywhere in your terminal:
+
+```bash
+# Fetch latest articles from all configured Substacks
+fetch-tech-news
+
+# Fetch articles AND create a daily digest with AI summaries
+fetch-tech-news --summarize
+
+# Show help and available options
+fetch-tech-news --help
+```
+
+### Daily Workflow Examples
+
+#### Morning Routine
+```bash
+# Get your daily tech news digest
+fetch-tech-news --summarize
+```
+
+#### Check for Updates
+```bash
+# Run again later to get any new articles
+fetch-tech-news --summarize
+# (Only processes new articles - no duplicates!)
+```
+
+#### Just Fetch Articles
+```bash
+# Download articles without summarization
+fetch-tech-news
+```
+
+### Output Files
+
+The system creates organized files in your subagents directory:
+
+```
+subagents/tech-news/
+├── articles/                    # Individual article files
+│   ├── latent-space-2025-09-19-article-title.md
+│   ├── the-sequence-2025-09-19-article-title.md
+│   └── ...
+├── digests/                     # Daily digest files
+│   └── 2025-09-19-daily-digest.md
+└── .state/                      # Processing state (auto-managed)
+```
+
+### Sample Daily Digest
+
+The system generates beautiful, organized daily digests:
+
+```markdown
+# Daily Tech News Digest - 2025-09-19
+
+*Generated on 2025-09-19 19:01*
+
+## Summary
+Today's digest contains 10 articles from 4 sources, covering the latest developments in AI, technology, and software development.
+
+## Articles
+
+### [The Future of AI in Software Development](https://example.com/article)
+**Tech Weekly** • 2025-09-19 10:00
+
+• Key insight about AI development tools
+• Important framework mentioned
+• Practical implications for developers
+
+---
+```
+
+### Advanced Usage
+
+#### Check What's New
+```bash
+# See what articles would be processed (dry run)
+fetch-tech-news --help
+```
+
+#### Multiple Runs
+```bash
+# First run of the day
+fetch-tech-news --summarize
+
+# Later in the day (only processes new articles)
+fetch-tech-news --summarize
+
+# Next day (creates new digest)
+fetch-tech-news --summarize
+```
+
+#### Troubleshooting
+```bash
+# If command not found, reload your shell
+source ~/.zshrc  # or ~/.bashrc
+
+# Check if installed correctly
+which fetch-tech-news
+
+# View logs for debugging
+cd ~/path/to/subagents/tech-news
+python3 src/main.py --help
 ```
 
 ## 📁 Project Structure
