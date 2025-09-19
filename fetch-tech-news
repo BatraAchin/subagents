@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Tech News Fetcher - Fetch latest articles from AI/tech Substacks and create daily digest
+
+# Change to the tech-news directory
+cd "$(dirname "$0")/tech-news"
+
+# Check if Python is available
+if ! command -v python3 &> /dev/null; then
+    echo "Error: python3 is required but not installed"
+    exit 1
+fi
+
+# Check if --summarize flag is passed
+if [[ "$1" == "--summarize" ]]; then
+    echo "Running with summarization..."
+    python3 src/main.py --summarize
+else
+    echo "Running fetch only (use --summarize to create daily digest)..."
+    python3 src/main.py
+fi

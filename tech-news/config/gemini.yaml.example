@@ -1,0 +1,11 @@
+gemini:
+  api_key: "YOUR_GEMINI_API_KEY_HERE"
+  model: "gemini-1.5-flash"
+  max_tokens: 8192
+  temperature: 0.3
+
+summarization:
+  max_article_length: 50000  # characters
+  summary_style: "bullet_points"
+  include_links: true
+  digest_format: "chronological"

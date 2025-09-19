@@ -1,0 +1,25 @@
+substacks:
+  - name: "Latent Space"
+    slug: "latent-space"
+    rss_url: "https://latentspace.substack.com/feed"
+    base_url: "https://latentspace.substack.com"
+    
+  - name: "The Sequence"
+    slug: "the-sequence"
+    rss_url: "https://thesequence.substack.com/feed"
+    base_url: "https://thesequence.substack.com"
+    
+  - name: "Exponential View"
+    slug: "exponential-view"
+    rss_url: "https://exponentialview.substack.com/feed"
+    base_url: "https://exponentialview.substack.com"
+    
+  - name: "MLOps Roundup"
+    slug: "mlops-roundup"
+    rss_url: "https://mlopsroundup.substack.com/feed"
+    base_url: "https://mlopsroundup.substack.com"
+
+settings:
+  max_articles_per_source: 3
+  output_format: "markdown"
+  include_metadata: true
