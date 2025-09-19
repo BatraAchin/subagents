@@ -26,32 +26,56 @@ A collection of autonomous agents for specialized tasks. Currently featuring a t
 
 ### Installation
 
+#### Option 1: Global Command Installation (Recommended)
+
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/subagents.git
+   git clone https://github.com/BatraAchin/subagents.git
    cd subagents
    ```
 
-2. **Set up tech news agent**
+2. **Install globally**
    ```bash
-   cd tech-news
-   pip install -r requirements.txt
+   ./install.sh
    ```
 
-3. **Configure API keys**
+3. **Configure API key**
    ```bash
-   # Edit config/gemini.yaml with your API key
-   nano config/gemini.yaml
+   # Edit the config file
+   nano tech-news/config/gemini.yaml
    ```
 
-4. **Run the agent**
+4. **Use from anywhere**
    ```bash
    # Fetch articles only
-   ./fetch-tech-news
+   fetch-tech-news
    
    # Fetch and create daily digest
+   fetch-tech-news --summarize
+   ```
+
+#### Option 2: Local Installation
+
+1. **Clone and setup**
+   ```bash
+   git clone https://github.com/BatraAchin/subagents.git
+   cd subagents
+   ./setup.sh
+   ```
+
+2. **Run locally**
+   ```bash
+   # From the subagents directory
    ./fetch-tech-news --summarize
    ```
+
+#### Uninstallation
+
+To remove the global command:
+```bash
+cd subagents
+./uninstall.sh
+```
 
 ## 📁 Project Structure
 
