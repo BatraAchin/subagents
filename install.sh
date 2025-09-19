@@ -16,6 +16,12 @@ if [ ! -d "$TECH_NEWS_DIR" ]; then
     exit 1
 fi
 
+# Check if requirements.txt exists
+if [ ! -f "$TECH_NEWS_DIR/requirements.txt" ]; then
+    echo "❌ Error: requirements.txt not found in tech-news directory."
+    exit 1
+fi
+
 # Detect shell
 SHELL_NAME=$(basename "$SHELL")
 echo "🐚 Detected shell: $SHELL_NAME"
@@ -29,6 +35,33 @@ else
     echo "⚠️  Warning: Unsupported shell ($SHELL_NAME). Defaulting to .bashrc"
     SHELL_CONFIG="$HOME/.bashrc"
 fi
+
+# Set up virtual environment
+VENV_DIR="$TECH_NEWS_DIR/venv"
+echo "🐍 Setting up virtual environment at: $VENV_DIR"
+
+if [ ! -d "$VENV_DIR" ]; then
+    echo "📦 Creating virtual environment..."
+    python3 -m venv "$VENV_DIR"
+    if [ $? -ne 0 ]; then
+        echo "❌ Error: Failed to create virtual environment"
+        exit 1
+    fi
+    echo "✅ Virtual environment created"
+else
+    echo "✅ Virtual environment already exists"
+fi
+
+# Install dependencies in virtual environment
+echo "📦 Installing dependencies in virtual environment..."
+"$VENV_DIR/bin/pip" install --upgrade pip
+"$VENV_DIR/bin/pip" install -r "$TECH_NEWS_DIR/requirements.txt"
+
+if [ $? -ne 0 ]; then
+    echo "❌ Error: Failed to install dependencies"
+    exit 1
+fi
+echo "✅ Dependencies installed successfully"
 
 # Create a wrapper script
 WRAPPER_SCRIPT="$HOME/.local/bin/fetch-tech-news"
@@ -49,6 +82,7 @@ cat > "$WRAPPER_SCRIPT" << EOF
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "\${BASH_SOURCE[0]}")" && pwd)"
 TECH_NEWS_DIR="$TECH_NEWS_DIR"
+VENV_DIR="$VENV_DIR"
 
 # Check if tech-news directory exists
 if [ ! -d "\$TECH_NEWS_DIR" ]; then
@@ -57,9 +91,19 @@ if [ ! -d "\$TECH_NEWS_DIR" ]; then
     exit 1
 fi
 
-# Change to tech-news directory and run the command
+# Check if virtual environment exists
+if [ ! -d "\$VENV_DIR" ]; then
+    echo "❌ Error: Virtual environment not found at \$VENV_DIR"
+    echo "Please reinstall subagents or run ./install.sh"
+    exit 1
+fi
+
+# Change to tech-news directory and activate virtual environment
 cd "\$TECH_NEWS_DIR"
-exec python3 src/main.py "\$@"
+source "\$VENV_DIR/bin/activate"
+
+# Run the command with the virtual environment's Python
+exec python src/main.py "\$@"
 EOF
 
 # Make the wrapper script executable

@@ -50,6 +50,7 @@ Thumbs.db
 tech-news/articles/
 tech-news/digests/
 tech-news/.state/
+tech-news/venv/
 tech-news/__pycache__/
 tech-news/src/__pycache__/
 tech-news/tests/__pycache__/

@@ -20,6 +20,20 @@ else
     SHELL_CONFIG="$HOME/.bashrc"
 fi
 
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TECH_NEWS_DIR="$SCRIPT_DIR/tech-news"
+VENV_DIR="$TECH_NEWS_DIR/venv"
+
+# Remove virtual environment
+if [ -d "$VENV_DIR" ]; then
+    echo "🗑️  Removing virtual environment: $VENV_DIR"
+    rm -rf "$VENV_DIR"
+    echo "✅ Virtual environment removed"
+else
+    echo "ℹ️  Virtual environment not found at $VENV_DIR"
+fi
+
 # Remove wrapper script
 WRAPPER_SCRIPT="$HOME/.local/bin/fetch-tech-news"
 
