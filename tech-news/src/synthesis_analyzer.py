@@ -52,23 +52,23 @@ class SynthesisAnalyzer:
         combined_text = "\n".join(article_texts)
         
         prompt = f"""
-You are a technology analyst tasked with synthesizing insights from multiple AI and technology articles. 
+You are a technology analyst writing an original analysis piece based on recent developments in AI and technology. 
 
-Below are {len(articles)} recent articles from top tech newsletters and blogs. Your job is to:
+Below are {len(articles)} recent articles from top tech newsletters and blogs that you've been following. Your task is to write an original analysis piece that:
 
-1. **Identify the 3-5 most significant cross-cutting themes** that appear across multiple articles
-2. **Extract the most important technical developments** mentioned
-3. **Find common patterns in industry trends** and market dynamics
-4. **Identify emerging opportunities and challenges** that multiple sources are highlighting
-5. **Synthesize actionable insights** for developers, engineers, and tech leaders
+1. **Identifies the 3-5 most significant cross-cutting themes** you've observed across the tech landscape
+2. **Analyzes the most important technical developments** you're seeing emerge
+3. **Examines patterns in industry trends** and market dynamics you've noticed
+4. **Identifies emerging opportunities and challenges** you believe are worth highlighting
+5. **Provides your original insights and analysis** for developers, engineers, and tech leaders
 
-Write a comprehensive analysis that reads like a high-quality tech newsletter post. Structure it with clear sections, use specific examples from the articles, and provide concrete takeaways.
+Write this as YOUR original analysis and commentary. Use the articles as reference material to support your points, but present this as your own insights and observations about the current state of technology. Structure it with clear sections, reference specific developments to support your analysis, and provide concrete takeaways based on your expertise.
 
-Here are the articles to analyze:
+Here are the recent articles you've been following:
 
 {combined_text}
 
-Please provide a well-structured analysis that would be valuable for a technical audience interested in AI, software development, and technology trends.
+Write a comprehensive analysis piece that showcases your insights and analysis of the current technology landscape.
 """
 
         try:
@@ -93,11 +93,11 @@ Please provide a well-structured analysis that would be valuable for a technical
         filepath = os.path.join(synthesis_dir, filename)
         
         # Add header and metadata
-        header = f"""# Tech News Synthesis - {datetime.now().strftime('%B %d, %Y')}
+        header = f"""# Tech Analysis: {datetime.now().strftime('%B %d, %Y')}
 
-*Generated on {datetime.now().strftime('%Y-%m-%d %H:%M')}*
+*Published on {datetime.now().strftime('%Y-%m-%d %H:%M')}*
 
-*This analysis synthesizes insights from multiple AI and technology sources to identify cross-cutting themes and emerging trends.*
+*My analysis of the current technology landscape, based on recent developments across AI, software development, and emerging tech trends.*
 
 ---
 
