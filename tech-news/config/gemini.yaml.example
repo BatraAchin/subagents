@@ -6,6 +6,6 @@ gemini:
 
 summarization:
   max_article_length: 50000  # characters
-  summary_style: "bullet_points"
+  summary_style: "detailed_analysis"
   include_links: true
   digest_format: "chronological"

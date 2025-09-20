@@ -77,15 +77,41 @@ class GeminiSummarizer:
             max_length = self.summary_config['max_article_length']
             content = self.truncate_content(content, max_length)
             
-            # Create prompt for bullet point summary
-            prompt = f"""Please provide a concise bullet-point summary of this AI/technology article. Focus on:
+            # Create prompt for detailed summary
+            prompt = f"""Please provide a comprehensive analysis of this AI/technology article. Extract and organize the most important information in detail:
 
-1. Key technical insights or findings
-2. Important developments or announcements
-3. Practical implications for developers/engineers
-4. Notable tools, frameworks, or methodologies mentioned
+## Key Technical Insights & Findings
+- What are the main technical discoveries, research findings, or breakthrough insights?
+- What specific methodologies, algorithms, or approaches are discussed?
+- What are the technical specifications, performance metrics, or benchmarks mentioned?
 
-Keep each bullet point to 1-2 sentences maximum. Be specific and technical.
+## Important Developments & Announcements
+- What new products, tools, frameworks, or services are being launched?
+- What partnerships, acquisitions, or strategic moves are announced?
+- What are the timelines, roadmaps, or future plans discussed?
+
+## Practical Implications & Applications
+- How will this impact developers, engineers, or technical professionals?
+- What are the real-world use cases and applications?
+- What are the implementation challenges, requirements, or considerations?
+- What skills, tools, or knowledge should practitioners acquire?
+
+## Notable Tools, Frameworks & Methodologies
+- What specific technologies, libraries, or platforms are mentioned?
+- What are the technical requirements, dependencies, or setup instructions?
+- What are the pros/cons, trade-offs, or comparisons with alternatives?
+
+## Market & Industry Context
+- What are the business implications, market trends, or industry impact?
+- What are the competitive advantages or differentiators?
+- What are the potential risks, challenges, or limitations?
+
+## Actionable Takeaways
+- What should readers do next or how can they get started?
+- What are the key resources, documentation, or learning materials?
+- What are the immediate next steps or recommendations?
+
+Be thorough, specific, and technical. Include concrete details, numbers, and specific examples. Organize information clearly with bullet points and sub-bullets where appropriate.
 
 Article Title: {article_metadata['title']}
 Source: {article_metadata['source']}
@@ -93,7 +119,7 @@ Source: {article_metadata['source']}
 Article Content:
 {content}
 
-Summary:"""
+Detailed Analysis:"""
 
             # Generate summary
             response = self.model.generate_content(prompt)

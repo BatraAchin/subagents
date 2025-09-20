@@ -28,19 +28,31 @@ class DigestBuilder:
         if len(title) > 80:
             title = title[:77] + "..."
         
-        # Format the summary with proper bullet points
+        # Format the summary with proper structure
         summary_lines = article['summary'].split('\n')
         formatted_summary = []
         
         for line in summary_lines:
             line = line.strip()
             if line:
-                # Ensure it starts with a bullet point
-                if not line.startswith('•') and not line.startswith('-') and not line.startswith('*'):
-                    line = f"• {line}"
-                formatted_summary.append(line)
+                # Handle different types of formatting
+                if line.startswith('##'):
+                    # Section headers - make them bold
+                    formatted_summary.append(f"\n**{line[2:].strip()}**")
+                elif line.startswith('###'):
+                    # Subsection headers - make them italic
+                    formatted_summary.append(f"\n*{line[3:].strip()}*")
+                elif line.startswith('- ') or line.startswith('• '):
+                    # Bullet points - keep as is
+                    formatted_summary.append(f"  {line}")
+                elif line.startswith('  - ') or line.startswith('  • '):
+                    # Sub-bullet points - keep as is
+                    formatted_summary.append(f"    {line[2:]}")
+                else:
+                    # Regular text - add bullet point
+                    formatted_summary.append(f"  • {line}")
         
-        summary_text = '\n  '.join(formatted_summary)
+        summary_text = '\n'.join(formatted_summary)
         
         # Create the formatted entry
         entry = f"""### [{title}]({article['url']})
