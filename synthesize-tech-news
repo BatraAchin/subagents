@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Activate virtual environment and run synthesis only
+cd "$(dirname "$0")/tech-news"
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Run synthesis only (no fetching)
+python3 src/main.py --synthesize

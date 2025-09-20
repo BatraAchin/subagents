@@ -11,11 +11,14 @@ from fetcher import SubstackFetcher
 from summarizer import GeminiSummarizer
 from digest_builder import DigestBuilder
 from state_manager import StateManager
+from synthesis_analyzer import SynthesisAnalyzer
 
 def main():
     parser = argparse.ArgumentParser(description='Fetch and summarize tech news from Substacks')
     parser.add_argument('--summarize', action='store_true', 
                        help='Create daily digest after fetching articles')
+    parser.add_argument('--synthesize', action='store_true',
+                       help='Analyze all articles and create synthesis post')
     args = parser.parse_args()
     
     # Get the directory of this script
@@ -40,28 +43,31 @@ def main():
     print("=" * 50)
     
     try:
-        # Initialize fetcher
-        fetcher = SubstackFetcher(substacks_config)
+        # Only fetch articles if not doing synthesis only
+        if not args.synthesize:
+            # Initialize fetcher
+            fetcher = SubstackFetcher(substacks_config)
+            
+            # Fetch articles
+            results = fetcher.fetch_latest_articles()
         
-        # Fetch articles
-        results = fetcher.fetch_latest_articles()
-        
-        # Print fetch summary
-        print("\n" + "=" * 50)
-        print("📊 FETCH SUMMARY")
-        print("=" * 50)
-        
-        if results['success']:
-            print(f"✅ Successfully fetched {len(results['success'])} articles:")
-            for article in results['success']:
-                print(f"  • {article['substack']}: {article['title'][:60]}...")
-        
-        if results['failed']:
-            print(f"\n❌ Failed to fetch from {len(results['failed'])} sources:")
-            for source in results['failed']:
-                print(f"  • {source}")
-        
-        print(f"\n📁 Articles saved to: {os.path.join(script_dir, '..', 'articles')}")
+        # Print fetch summary only if we fetched articles
+        if not args.synthesize:
+            print("\n" + "=" * 50)
+            print("📊 FETCH SUMMARY")
+            print("=" * 50)
+            
+            if results['success']:
+                print(f"✅ Successfully fetched {len(results['success'])} articles:")
+                for article in results['success']:
+                    print(f"  • {article['substack']}: {article['title'][:60]}...")
+            
+            if results['failed']:
+                print(f"\n❌ Failed to fetch from {len(results['failed'])} sources:")
+                for source in results['failed']:
+                    print(f"  • {source}")
+            
+            print(f"\n📁 Articles saved to: {os.path.join(script_dir, '..', 'articles')}")
         
         # Summarize if requested
         if args.summarize:
@@ -117,6 +123,39 @@ def main():
                     print("❌ Failed to create daily digest")
             else:
                 print("❌ No articles were successfully summarized")
+        
+        # Synthesis if requested
+        if args.synthesize:
+            print("\n" + "=" * 50)
+            print("🧠 CREATING SYNTHESIS ANALYSIS")
+            print("=" * 50)
+            
+            if not os.path.exists(gemini_config):
+                print(f"Error: Gemini config file not found at {gemini_config}")
+                return
+            
+            # Initialize synthesis analyzer
+            analyzer = SynthesisAnalyzer(gemini_config, state_manager)
+            
+            # Analyze all articles
+            articles = analyzer.analyze_all_articles()
+            if not articles:
+                print("No articles found to analyze")
+                return
+            
+            print(f"Analyzing {len(articles)} articles for cross-cutting themes...")
+            
+            # Generate synthesis
+            synthesis_text = analyzer.synthesize_insights(articles)
+            if synthesis_text:
+                # Save synthesis
+                synthesis_path = analyzer.save_synthesis(synthesis_text)
+                if synthesis_path:
+                    print(f"📄 Synthesis analysis saved to: {synthesis_path}")
+                else:
+                    print("❌ Failed to save synthesis analysis")
+            else:
+                print("❌ Failed to generate synthesis analysis")
         
         print("\n✨ Done!")
         
