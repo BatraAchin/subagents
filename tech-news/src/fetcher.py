@@ -7,13 +7,16 @@ from datetime import datetime
 import re
 from urllib.parse import urljoin
 import time
+from blog_scraper import BlogScraper
 
 class SubstackFetcher:
     def __init__(self, config_path):
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
-        self.substacks = self.config['substacks']
+        self.substacks = self.config.get('substacks', [])
+        self.blogs = self.config.get('blogs', [])
         self.settings = self.config['settings']
+        self.blog_scraper = BlogScraper(self.config)
         
     def fetch_rss_feed(self, rss_url):
         """Fetch and parse RSS feed"""
@@ -125,13 +128,54 @@ class SubstackFetcher:
             print(f"Error saving article: {e}")
             return None
     
+    def save_blog_article(self, article, blog):
+        """Save blog article to markdown file"""
+        try:
+            # Parse publication date
+            pub_date = datetime(*article['published_parsed'][:6])
+            
+            # Create filename
+            filename = self.format_article_filename(
+                blog['slug'], 
+                article['title'], 
+                pub_date
+            )
+            
+            # Create articles directory if it doesn't exist
+            articles_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'articles')
+            os.makedirs(articles_dir, exist_ok=True)
+            
+            filepath = os.path.join(articles_dir, filename)
+            
+            # Prepare markdown content
+            markdown_content = f"""# {article['title']}
+
+**Source:** {blog['name']}  
+**Date:** {pub_date.strftime('%Y-%m-%d %H:%M')}  
+**URL:** {article['link']}  
+
+---
+
+{article['content']}
+"""
+            
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(markdown_content)
+            
+            return filepath
+            
+        except Exception as e:
+            print(f"Error saving blog article: {e}")
+            return None
+    
     def fetch_latest_articles(self):
-        """Fetch latest articles from all configured Substacks"""
+        """Fetch latest articles from all configured sources"""
         results = {
             'success': [],
             'failed': []
         }
         
+        # Fetch from Substacks
         for substack in self.substacks:
             print(f"\nFetching from {substack['name']}...")
             
@@ -169,5 +213,35 @@ class SubstackFetcher:
                 
                 # Be respectful to the server
                 time.sleep(1)
+        
+        # Fetch from Blogs
+        for blog in self.blogs:
+            print(f"\nScraping from {blog['name']}...")
+            
+            try:
+                articles = self.blog_scraper.scrape_blog_posts(blog)
+                if not articles:
+                    print(f"No articles found for {blog['name']}")
+                    results['failed'].append(blog['name'])
+                    continue
+                
+                for i, article in enumerate(articles, 1):
+                    print(f"  Processing article {i}/{len(articles)}: {article['title'][:60]}...")
+                    
+                    # Save article
+                    filepath = self.save_blog_article(article, blog)
+                    if filepath:
+                        print(f"    Saved: {os.path.basename(filepath)}")
+                        results['success'].append({
+                            'substack': blog['name'],
+                            'title': article['title'],
+                            'file': filepath
+                        })
+                    else:
+                        print(f"    Failed to save article")
+                
+            except Exception as e:
+                print(f"Error scraping {blog['name']}: {e}")
+                results['failed'].append(blog['name'])
         
         return results
